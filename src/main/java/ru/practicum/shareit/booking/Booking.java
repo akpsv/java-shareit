@@ -1,10 +1,11 @@
 package ru.practicum.shareit.booking;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.Date;
+import javax.persistence.*;
+import javax.validation.constraints.FutureOrPresent;
+import java.time.LocalDateTime;
 
 /**
  * TODO Sprint add-bookings.
@@ -14,13 +15,31 @@ import java.util.Date;
  * Владелец вещи обязательно должен подтвердить бронирование.
  */
 
-@Value
+@Entity
+@Table(name = "bookings")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
 public class Booking {
-    private int id;
-    private Date start;
-    private Date end;
-    private Item item;
-    private int booker; //Ид пользователя, который осуществляет бронирование
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
+    protected Item item;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "booking_id")
+    private long id;
+    @Column(name = "start_date")
+    @FutureOrPresent
+    private LocalDateTime start;
+    @Column(name = "end_date")
+    @FutureOrPresent
+    private LocalDateTime end;
+    @Column(name = "booker_id")
+    private long bookerId; //Ид пользователя, который осуществляет бронирование
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private BookingStatus status;
+
 }

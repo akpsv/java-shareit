@@ -5,6 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,12 +29,12 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public Optional<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable int userId) {
+    public Optional<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable long userId) {
         return Optional.ofNullable(userDto).flatMap(dto -> userService.updateUser(dto, userId));
     }
 
     @GetMapping("/{userId}")
-    public Optional<User> getUserById(@PathVariable int userId) {
+    public Optional<UserDto> getUserById(@PathVariable long userId) {
         return userService.getUserById(userId);
     }
 
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public Optional<Boolean> deleteUserById(@PathVariable int userId) {
-        return userService.deleteUserById(userId);
+    public void deleteUserById(@PathVariable long userId) {
+        userService.deleteUserById(userId);
     }
 }

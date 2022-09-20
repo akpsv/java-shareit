@@ -2,76 +2,69 @@ package ru.practicum.shareit.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
-    private final UserStorage userStorage;
+
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
+    @Transactional
     @Override
     public Optional<UserDto> addUser(UserDto userDto) {
         return UserMapper.toUser(userDto)
-                .map(user -> userStorage.add(user))
-                .flatMap(user -> UserMapper.toDto(user.get()));
+                .map(user -> userRepository.save(user))
+                .flatMap(user -> UserMapper.toDto(user));
     }
 
     @Override
     public Optional<List<User>> getUsers() {
-        Function<Map<Integer, User>, Optional<List<User>>> getUsersFunc = (entries ->
-                Optional.of(entries.values().stream().collect(Collectors.toList()))
-        );
-        return userStorage.get(getUsersFunc, userStorage.getUsers());
+        return Optional.of(userRepository.findAll());
     }
 
+    @Transactional
     @Override
-    public Optional<UserDto> updateUser(final UserDto userDto, final int userId) {
-        Function<UserDto, Optional<UserDto>> updateFunc = (dto ->
-                getUserById(userId).map(user -> updateUserFromDto(dto, user))
-                        .flatMap(newUser -> {
-                            Optional.ofNullable(userStorage.getUsers().replace(newUser.getId(), newUser));
-                            return UserMapper.toDto(newUser);
-                        })
-        );
-        return userStorage.update(updateFunc, userDto);
+    public Optional<UserDto> updateUser(final UserDto userDto, final long userId) {
+        return userRepository.findById(userId)
+                .map(user -> updateUserFromDto(userDto, user))
+                .map(user -> userRepository.save(user))
+                .flatMap(user -> UserMapper.toDto(user));
     }
 
     private User updateUserFromDto(UserDto dto, User user) {
         User updatedUser = user;
-        if (dto.getName() == null && userStorage.getUnicEmails().contains(dto.getEmail())) {
+        if (dto.getName() == null && user.getEmail().equals(dto.getEmail())) {
             throw new RuntimeException("Такой email уже существует.");
         }
         if (dto.getName() != null) {
             updatedUser = updatedUser.toBuilder().name(dto.getName()).build();
         }
         if (dto.getEmail() != null) {
-            userStorage.getUnicEmails().removeIf(email -> user.getEmail().equals(email));
             updatedUser = updatedUser.toBuilder().email(dto.getEmail()).build();
-            userStorage.getUnicEmails().add(dto.getEmail());
         }
         return updatedUser;
     }
 
     @Override
-    public Optional<User> getUserById(int userId) {
-        Function<Integer, Optional<User>> getUserByIdFunc = ((id) ->
-                Optional.ofNullable(userStorage.getUsers().get(id)));
-        return userStorage.get(getUserByIdFunc, userId);
+    public Optional<UserDto> getUserById(long userId) {
+        return Optional.of(userRepository.getReferenceById(userId))
+                .flatMap(user -> UserMapper.toDto(user));
     }
 
+    @Transactional
     @Override
-    public Optional<Boolean> deleteUserById(int userId) {
-        return userStorage.deleteById(userId)
-                .map(user -> userStorage.getUnicEmails().remove(user.getEmail()));
+    public void deleteUserById(long userId) {
+        userRepository.deleteById(userId);
     }
 }
