@@ -74,13 +74,12 @@ public class ErrorHandler {
                 .build();
     }
 
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse otherExceptionHandler(Throwable e) {
         return ErrorResponse.builder()
                 .error("Ошибка на сервере")
-                .message(e.getMessage() + e.getStackTrace())
+                .message(e.getMessage())
                 .build();
     }
 }

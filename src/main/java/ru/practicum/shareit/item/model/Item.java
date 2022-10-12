@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+
 @Entity
 @Table(name = "items")
 @NoArgsConstructor
@@ -35,5 +36,4 @@ public class Item {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
     private Set<Comment> comments;
-
 }
