@@ -8,7 +8,6 @@ import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
 /**
- * TODO Sprint add-bookings.
  * Чтобы воспользоваться нужной вещью, её требуется забронировать.
  * Бронирование, или Booking — ещё одна важная сущность приложения.
  * Бронируется вещь всегда на определённые даты.
@@ -23,9 +22,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Booking {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false)
-    protected Item item;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
@@ -41,5 +37,7 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private BookingStatus status;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
+    protected Item item;
 }
