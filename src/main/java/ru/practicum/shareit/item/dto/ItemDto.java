@@ -17,4 +17,5 @@ public class ItemDto {
     private String description;
     @NotNull(groups = {Create.class}, message = "Поле available не может быть null")
     private Boolean available;
+    private long requestId;
 }

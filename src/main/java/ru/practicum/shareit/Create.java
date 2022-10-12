@@ -1,4 +1,4 @@
 package ru.practicum.shareit;
 
-public interface Create  {
+public interface Create {
 }
