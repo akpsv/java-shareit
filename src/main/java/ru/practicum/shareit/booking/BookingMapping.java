@@ -9,18 +9,29 @@ import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.dto.UserDto;
 
 @AllArgsConstructor
 @Component
 public class BookingMapping {
     private final ItemService itemService;
     private final UserService userService;
-    private final ItemMapper itemMapper;
+//    private final ItemMapper itemMapper;
 
     public BookingOutDto toDto(Booking booking) {
+        UserDto userDto = userService.getUserById(booking.getBookerId()).get();
         return BookingOutDto.builder()
-                .booker(userService.getUserById(booking.getBookerId()).get())
-                .item(itemMapper.toDto(booking.getItem()).get())
+                .booker(new BookingOutDto.BookerDto(
+                        userDto.getId(),
+                        userDto.getName(),
+                        userDto.getEmail())
+                )
+                .item(new BookingOutDto.ItemForBookingDto(
+                        booking.getItem().getId(),
+                        booking.getItem().getName(),
+                        booking.getItem().getDescription(),
+                        booking.getItem().getAvailable()
+                ))
                 .id(booking.getId())
                 .start(booking.getStart())
                 .end(booking.getEnd())
