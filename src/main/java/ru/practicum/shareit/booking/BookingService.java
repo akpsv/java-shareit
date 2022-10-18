@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookingService {
-    Optional<Booking> add(long userId, BookingInDto bookingInDto);
+    Optional<BookingOutDto> add(long userId, BookingInDto bookingInDto);
 
     Optional<Booking> approveBooking(long userId, long bookingId, boolean approved);
 

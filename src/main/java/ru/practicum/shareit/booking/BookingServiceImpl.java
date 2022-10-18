@@ -36,14 +36,14 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public Optional<Booking> add(long bookerId, BookingInDto bookingInDto) {
+    public Optional<BookingOutDto> add(long bookerId, BookingInDto bookingInDto) {
         Booking booking = bookingMapping.fromInDto(bookingInDto);
         checkBooking(bookerId, booking);
 
         booking = booking.toBuilder().status(BookingStatus.WAITING).bookerId(bookerId).build();
         Optional<Booking> addedBooking = Optional.of(bookingRepository.save(booking));
-
-        return addedBooking;
+        return Optional.ofNullable(bookingMapping.toDto(addedBooking.get()));
+//        return addedBooking;
     }
 
     @Transactional
