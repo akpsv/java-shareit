@@ -4,13 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.Create;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Getter
@@ -28,7 +23,7 @@ public class BookingOutDto {
 
     @Getter
     @Setter
-    public static class ItemForBookingDto{
+    public static class ItemForBookingDto {
         long id;
         String name;
         String description;
@@ -44,7 +39,7 @@ public class BookingOutDto {
 
     @Getter
     @Setter
-    public static class BookerDto{
+    public static class BookerDto {
         long id;
         String name;
         String email;

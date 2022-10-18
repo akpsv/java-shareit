@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.booking.dto.BookingOutDto;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -23,14 +22,14 @@ public class ItemOutDto {
 
     @Getter
     @Setter
-    public static class BookingForItemDto{
+    public static class BookingForItemDto {
         long id;
         LocalDateTime start;
         LocalDateTime end;
         long bookerId;
         BookingStatus status;
 
-        public BookingForItemDto(long id, LocalDateTime start, LocalDateTime end,  long bookerId, BookingStatus status) {
+        public BookingForItemDto(long id, LocalDateTime start, LocalDateTime end, long bookerId, BookingStatus status) {
             this.id = id;
             this.start = start;
             this.end = end;
