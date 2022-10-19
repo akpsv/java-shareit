@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Component
 public class ItemMapper {
 
-    public Optional<ItemDto> toDto(final Item item) {
+    public static Optional<ItemDto> toDto(final Item item) {
         return Optional.ofNullable(item)
                 .map(processingItem -> ItemDto.builder()
                         .id(item.getId())
@@ -27,7 +27,7 @@ public class ItemMapper {
                 );
     }
 
-    public Optional<Item> toItem(final ItemDto itemDto) {
+    public static Optional<Item> toItem(final ItemDto itemDto) {
         return Optional.ofNullable(itemDto)
                 .map(processingItemDto -> Item.builder()
                         .name(itemDto.getName())
@@ -37,7 +37,7 @@ public class ItemMapper {
                 );
     }
 
-    public Optional<ItemOutDto> toOutDto(Item item, BookingService bookingService) {
+    public static Optional<ItemOutDto> toOutDto(Item item, BookingService bookingService) {
         BookingOutDto lastOutBookingDto = getLastBookingForItem(item, bookingService);
         ItemOutDto.BookingForItemDto lastBookingForItemDto = null;
         if (lastOutBookingDto != null) {
@@ -78,7 +78,7 @@ public class ItemMapper {
         return Optional.of(itemOutDto);
     }
 
-    private BookingOutDto getLastBookingForItem(Item item, BookingService bookingService) {
+    private static BookingOutDto getLastBookingForItem(Item item, BookingService bookingService) {
         BookingOutDto bookingOutDto1 = bookingService.getBookingsCurrentOwner(item.getOwnerId(), BookingState.PAST)
                 .get().stream()
                 .filter(bookingOutDto -> bookingOutDto.getItem().getId() == item.getId())
@@ -87,7 +87,7 @@ public class ItemMapper {
         return bookingOutDto1;
     }
 
-    private BookingOutDto getNextBookingForItem(Item item, BookingService bookingService) {
+    private static BookingOutDto getNextBookingForItem(Item item, BookingService bookingService) {
         BookingOutDto bookingOutDto1 = bookingService.getBookingsCurrentOwner(item.getOwnerId(), BookingState.FUTURE)
                 .get().stream()
                 .filter(bookingOutDto -> bookingOutDto.getItem().getId() == item.getId())

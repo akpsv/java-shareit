@@ -8,7 +8,6 @@ import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
 /**
- * TODO Sprint add-bookings.
  * Чтобы воспользоваться нужной вещью, её требуется забронировать.
  * Бронирование, или Booking — ещё одна важная сущность приложения.
  * Бронируется вещь всегда на определённые даты.

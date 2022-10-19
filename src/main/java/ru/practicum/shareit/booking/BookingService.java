@@ -9,11 +9,11 @@ import java.util.Optional;
 public interface BookingService {
     Optional<BookingOutDto> add(long userId, BookingInDto bookingInDto);
 
-    Optional<Booking> approveBooking(long userId, long bookingId, boolean approved);
+    Optional<BookingOutDto> approveBooking(long userId, long bookingId, boolean approved);
 
-    Optional<Booking> getBookingById(long userId, long bookingId);
+    Optional<BookingOutDto> getBookingById(long userId, long bookingId);
 
-    Optional<List<Booking>> getBookingsCurrentUser(long userId, BookingState bookingState);
+    Optional<List<BookingOutDto>> getBookingsCurrentUser(long userId, BookingState bookingState);
 
     Optional<List<BookingOutDto>> getBookingsCurrentOwner(long userId, BookingState bookingState);
 }
