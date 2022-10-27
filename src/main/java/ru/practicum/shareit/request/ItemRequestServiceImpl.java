@@ -1,6 +1,8 @@
 package ru.practicum.shareit.request;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.BadRequestException;
 import ru.practicum.shareit.error.NotFoundException;
@@ -19,13 +21,26 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class ItemRequestServiceImpl implements ItemRequestService{
+public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
+    /**
+     * TODO:
+     *  Получить запросы всех пользователей кроме данного
+     *  Преобразовать в дто
+     *  Вернуть список дто
+     *
+     * @param requestorId
+     * @param indexOfFirstElement
+     * @param numberOfElemenets
+     * @return
+     */
+    @PersistenceContext
+    EntityManager entityManager;
+
     @Override
     public Optional<ItemRequestDtoOut> addItemRequest(long requestorId, ItemRequestDtoIn itemRequestDtoIn) {
         checkRequestorId(requestorId);
-//        checkItemRequestDtoIn(itemRequestDtoIn);
 
         itemRequestDtoIn = itemRequestDtoIn.toBuilder().requestor(requestorId).build();
         return getItemRequestDtoOut(itemRequestDtoIn);
@@ -36,7 +51,7 @@ public class ItemRequestServiceImpl implements ItemRequestService{
     }
 
     private void checkItemRequestDtoIn(ItemRequestDtoIn itemRequestDtoIn) {
-        if (itemRequestDtoIn.getDescription() == null || itemRequestDtoIn.getDescription().isBlank()){
+        if (itemRequestDtoIn.getDescription() == null || itemRequestDtoIn.getDescription().isBlank()) {
             throw new BadRequestException("Поле с описанием пустое.");
         }
     }
@@ -60,38 +75,18 @@ public class ItemRequestServiceImpl implements ItemRequestService{
     @Override
     public Optional<List<ItemRequestDtoOut>> getItemRequestsOfRequestor(long requestorId) {
         userRepository.findById(requestorId).orElseThrow(() -> new NotFoundException("Такой пользователь не найден"));
-        List<ItemRequestDtoOut> itemRequestDtoOuts = itemRequestRepository.getItemRequestsByRequestor(requestorId)
-                .get().stream()
-                .map(itemRequest -> ItemRequestMapper.toItemRequestDtoOut(itemRequest))
-                .sorted(Comparator.comparing(ItemRequestDtoOut::getCreated).reversed())
-                .collect(Collectors.toList());
+        List<ItemRequestDtoOut> itemRequestDtoOuts = itemRequestRepository.getItemRequestsByRequestor(requestorId).get().stream().map(itemRequest -> ItemRequestMapper.toItemRequestDtoOut(itemRequest)).sorted(Comparator.comparing(ItemRequestDtoOut::getCreated).reversed()).collect(Collectors.toList());
         return Optional.ofNullable(itemRequestDtoOuts);
     }
 
-    /**
-     * TODO:
-     *  Получить запросы всех пользователей кроме данного
-     *  Преобразовать в дто
-     *  Вернуть список дто
-     *
-     * @param requestorId
-     * @param indexOfFirstElement
-     * @param numberOfElemenets
-     * @return
-     */
-    @PersistenceContext
-    EntityManager entityManager;
     @Override
     public Optional<List<ItemRequestDtoOut>> getItemRequestsCreatedAnotherUsers(long requestorId, Integer indexOfFirstElement, Integer numberOfElemenets) {
-        List<ItemRequestDtoOut> itemRequestDtoOuts = itemRequestRepository
-                .getItemRequestsCreatedAnotherUsers(requestorId, entityManager, indexOfFirstElement, numberOfElemenets).get().stream()
-                .map(itemRequest -> ItemRequestMapper.toItemRequestDtoOut(itemRequest))
-                .collect(Collectors.toList());
+        List<ItemRequestDtoOut> itemRequestDtoOuts = itemRequestRepository.getItemRequestsCreatedAnotherUsers(requestorId, entityManager, indexOfFirstElement, numberOfElemenets).get().stream().map(itemRequest -> ItemRequestMapper.toItemRequestDtoOut(itemRequest)).collect(Collectors.toList());
         return Optional.of(itemRequestDtoOuts);
     }
 
     @Override
-    public Optional<ItemRequestDtoOut> getItemRequestById(long userId,long requestId) {
+    public Optional<ItemRequestDtoOut> getItemRequestById(long userId, long requestId) {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Запроашивающий пользователь с таким идентификатором не найден."));
         ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Запрос с таким идентификатором не найден"));
         ItemRequestDtoOut itemRequestDtoOut = ItemRequestMapper.toItemRequestDtoOut(itemRequest);

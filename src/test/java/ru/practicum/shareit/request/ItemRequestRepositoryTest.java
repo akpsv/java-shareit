@@ -29,12 +29,12 @@ class ItemRequestRepositoryTest {
     void getItemRequestsExceptRequestor_ThereAreSeveralItemRequest_GetAllRequestsExceptSpecificRequestorId() {
         //Подготовка
         User user1 = User.builder()
-                .id(1l)
+                .id(1L)
                 .name("user1")
                 .email("user1@email.ru")
                 .build();
         User user2 = User.builder()
-                .id(2l)
+                .id(2L)
                 .name("user2")
                 .email("user2@email.ru")
                 .build();
@@ -43,15 +43,15 @@ class ItemRequestRepositoryTest {
 
 
         ItemRequest itemRequest1 = ItemRequest.builder()
-                .id(1l)
+                .id(1L)
                 .description("описание")
-                .requestor(1l)
+                .requestor(1L)
                 .created(Date.from(Instant.now()))
                 .build();
         ItemRequest itemRequest2 = ItemRequest.builder()
-                .id(1l)
+                .id(1L)
                 .description("описание")
-                .requestor(2l)
+                .requestor(2L)
                 .created(Date.from(Instant.now()))
                 .build();
         itemRequestRepository.save(itemRequest1);
@@ -63,6 +63,6 @@ class ItemRequestRepositoryTest {
 
         //Проверка
         assertThat(actualItemRequestsExceptRequestor.get().size(), Matchers.equalTo(1));
-        assertThat(actualItemRequestsExceptRequestor.get().get(0).getRequestor(), Matchers.equalTo(2l));
+        assertThat(actualItemRequestsExceptRequestor.get().get(0).getRequestor(), Matchers.equalTo(2L));
     }
 }

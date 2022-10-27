@@ -1,15 +1,8 @@
 package ru.practicum.shareit.request;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.practicum.shareit.request.dto.ItemRequestDtoIn;
 import ru.practicum.shareit.request.dto.ItemRequestDtoOut;
 import ru.practicum.shareit.user.UserRepository;
@@ -17,12 +10,12 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.Optional;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 //@RequiredArgsConstructor(onConstructor_ = @Autowired )
 @SpringBootTest
-public class ItemRequestServiceImpl_IntegrationTest {
+public class ItemRequestServiceImplIntegrationTest {
     @Autowired
     private ItemRequestRepository itemRequestRepository;
     @Autowired

@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ItemRequestMapper {
-    public static ItemRequest toItemRequest(ItemRequestDtoIn itemRequestDtoIn){
+    public static ItemRequest toItemRequest(ItemRequestDtoIn itemRequestDtoIn) {
         return ItemRequest.builder()
                 .description(itemRequestDtoIn.getDescription())
                 .requestor(itemRequestDtoIn.getRequestor())
@@ -16,7 +16,7 @@ public class ItemRequestMapper {
                 .build();
     }
 
-    public static ItemRequestDtoOut toItemRequestDtoOut(ItemRequest itemRequest){
+    public static ItemRequestDtoOut toItemRequestDtoOut(ItemRequest itemRequest) {
         Set<ItemRequestDtoOut.ItemForRequestDto> itemForRequestDtos = itemRequest.getItems().stream()
                 .map(request -> ItemRequestDtoOut.ItemForRequestDto.builder()
                         .id(request.getId())

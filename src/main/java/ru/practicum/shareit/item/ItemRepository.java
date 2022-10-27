@@ -16,9 +16,6 @@ import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-//    Optional<List<Item>> findByOwnerIdEquals(long ownerId);
-
-//    Optional<List<Item>> findByNameOrDescriptionContainingIgnoreCaseAndAvailable(String searchStringIntoName, String searchStringIntoDesctiption, boolean isAvailable);
 
     default Optional<List<Item>> searchItems(EntityManager entityManager, String searchingText, Integer from, Integer size) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();

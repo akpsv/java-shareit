@@ -17,7 +17,7 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
     Optional<List<ItemRequest>> getItemRequestsByRequestor(long requestorId);
 
     default Optional<List<ItemRequest>> getItemRequestsCreatedAnotherUsers(long requestorId, EntityManager entityManager,
-                                                                           Integer indexOfFirstElement, Integer numberOfElemenets ) {
+                                                                           Integer indexOfFirstElement, Integer numberOfElemenets) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<ItemRequest> criteriaQuery = criteriaBuilder.createQuery(ItemRequest.class);
 
@@ -28,7 +28,7 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
 
         TypedQuery<ItemRequest> typedQuery = entityManager.createQuery(criteriaQuery);
 
-        if (indexOfFirstElement!=null && numberOfElemenets != null) {
+        if (indexOfFirstElement != null && numberOfElemenets != null) {
             typedQuery.setFirstResult(indexOfFirstElement).setMaxResults(numberOfElemenets);
         }
 

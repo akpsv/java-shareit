@@ -5,7 +5,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 

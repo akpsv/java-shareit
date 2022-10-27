@@ -1,10 +1,11 @@
 package ru.practicum.shareit.request.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -29,7 +30,7 @@ public class ItemRequestDtoOut {
     @Setter
     @RequiredArgsConstructor
     @Builder(toBuilder = true)
-    public static class ItemForRequestDto{
+    public static class ItemForRequestDto {
         private final long id;
         private final String name;
         private final String description;

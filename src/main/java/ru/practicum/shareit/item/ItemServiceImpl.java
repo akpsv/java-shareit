@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
@@ -20,7 +21,6 @@ import ru.practicum.shareit.user.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContexts;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
@@ -46,7 +47,8 @@ public class ItemServiceImpl implements ItemService {
         Optional<Item> resultItem = ItemMapper.toItem(itemDto, itemRequestRepository)
                 .map(item -> item.toBuilder().ownerId(ownerId).build())
                 .map(item -> itemRepository.save(item));
-        return ItemMapper.toDto(resultItem.get());
+        Optional<ItemDto> itemDto1 = ItemMapper.toDto(resultItem.get());
+        return itemDto1;
     }
 
     /**
@@ -63,11 +65,12 @@ public class ItemServiceImpl implements ItemService {
                 .filter(item -> item.getOwnerId() == userId)
                 .orElseThrow(() -> new NotFoundException("Ид владельца не правильный"));
 
-        return Optional.of(itemDto)
+        Optional<ItemDto> itemDto1 = Optional.of(itemDto)
                 .flatMap(dto -> itemRepository.findById(itemId)
                         .map(item -> updateItemFromDto(dto, item))
                         .flatMap(updatingItem -> Optional.of(itemRepository.save(updatingItem))))
                 .flatMap(item -> ItemMapper.toDto(item));
+        return itemDto1;
     }
 
     private Item updateItemFromDto(ItemDto dto, Item item) {
@@ -106,7 +109,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Optional<List<Item>> getOwnerItems(final long userId, Integer from, Integer size) {
-        return itemRepository.getOwnerItems(entityManager,userId, from, size);
+        return itemRepository.getOwnerItems(entityManager, userId, from, size);
 //        return itemRepository.findByOwnerIdEquals(userId);
     }
 

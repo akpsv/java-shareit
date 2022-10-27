@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -63,7 +62,7 @@ class ItemRequestServiceImplTest {
                 .build();
 
         user1 = User.builder()
-                .id(1l)
+                .id(1L)
                 .name("user1")
                 .email("user1@email.ru")
                 .build();
@@ -88,9 +87,9 @@ class ItemRequestServiceImplTest {
     void addItemRequest_RequestorIdIsNotZero_GetItemRequestDtoOut() {
         //Подготовка
         ItemRequest itemRequest = ItemRequest.builder()
-                .id(1l)
+                .id(1L)
                 .description("описание")
-                .requestor(1l)
+                .requestor(1L)
                 .created(Date.from(Instant.now()))
                 .build();
 
@@ -105,57 +104,4 @@ class ItemRequestServiceImplTest {
         assertThat(actualItemRequestDtoOut.get().getDescription(), equalTo(expectedItemRequestDtoOut.getDescription()));
         assertThat(actualItemRequestDtoOut.get().getRequestor(), equalTo(expectedItemRequestDtoOut.getRequestor()));
     }
-
-
-
-//    @Test
-//    void addItemRequest() {
-//
-//
-//        assertThat(mockItemRequestRepository, notNullValue());
-//        assertThat(mockUserRepository, notNullValue());
-//
-//
-//        //Подготовка
-//        User user1 = User.builder()
-//                .name("user1")
-//                .email("user1@email.ru")
-//                .build();
-////        userRepository.save(user1);
-////        ItemRequestRepository mockItemRequestRepository = Mockito.mock(ItemRequestRepository.class);
-////        ItemRequestService itemRequestServiceWithMock = new ItemRequestServiceImpl(mockItemRequestRepository);
-//
-//        ItemRequestDtoIn dtoIn = ItemRequestDtoIn.builder()
-//                .description("Какой-то текст")
-//                .requestor(1L)
-//                .build();
-//        ItemRequestDtoOut expectedItemRequestDtoOut = ItemRequestDtoOut.builder()
-//                .id(1L)
-//                .description("Какой-то текст")
-//                .requestor(1L)
-//                .build();
-//
-//        Mockito
-//                .when(mockItemRequestRepository.save(Mockito.any(ItemRequest.class)))
-//                .thenReturn(
-//                        ItemRequest.builder()
-//                                .id(1l)
-//                                .description("Какой-то текст")
-//                                .requestor(1l)
-//                                .created(Date.from(Instant.now()))
-//                                .build()
-//                );
-//
-//
-//        //Действия
-//        Optional<ItemRequestDtoOut> itemRequestDtoOut = itemRequestServiceWithMocks.addItemRequest(1L, dtoIn);
-//
-//        //Проверка
-//        assertThat(itemRequestDtoOut.get().getId(), equalTo(expectedItemRequestDtoOut.getId()));
-//        assertThat(itemRequestDtoOut.get().getDescription(), equalTo(expectedItemRequestDtoOut.getDescription()));
-//        assertThat(itemRequestDtoOut.get().getRequestor(), equalTo(expectedItemRequestDtoOut.getRequestor()));
-//
-//        Mockito.verify(mockItemRequestRepository, Mockito.times(1))
-//                .save(Mockito.any(ItemRequest.class));
-//    }
 }

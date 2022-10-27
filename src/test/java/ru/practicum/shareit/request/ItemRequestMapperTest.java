@@ -17,6 +17,7 @@ class ItemRequestMapperTest {
 
     Item item;
     ItemRequest itemRequst;
+
     @BeforeEach
     void setUp() {
         item = Item.builder()
@@ -30,9 +31,9 @@ class ItemRequestMapperTest {
         items.add(item);
 
         itemRequst = ItemRequest.builder()
-                .id(1l)
+                .id(1L)
                 .description("описание")
-                .requestor(1l)
+                .requestor(1L)
                 .created(Date.from(Instant.now()))
                 .items(items)
                 .build();
