@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Value
 @Builder(toBuilder = true)
 public class UserDto {
-    private int id;
+    private long id;
     @NotBlank(groups = {Create.class}, message = "Имя не может быть null")
     private String name;
     @NotBlank(groups = {Create.class}, message = "Email не может быть null")

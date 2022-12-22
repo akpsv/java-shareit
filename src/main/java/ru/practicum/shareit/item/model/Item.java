@@ -1,28 +1,39 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 import ru.practicum.shareit.Create;
-import ru.practicum.shareit.request.ItemRequest;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
-/**
- * TODO Sprint add-controllers.
- */
 
-@Value
+@Entity
+@Table(name = "items")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Builder(toBuilder = true)
 public class Item {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id")
+    private long id;
+    @Column(name = "name", nullable = false)
     @NotBlank(groups = {Create.class}, message = "Имя не может быть пустым")
     private String name;
+    @Column(name = "description", nullable = false)
     @NotBlank(groups = {Create.class}, message = "Описание не может быть пустым")
     private String description;
+    @Column(name = "owner_id", nullable = false)
     @NotBlank(groups = {Create.class}, message = "Идентификатор владельца не может быть пустым")
-    private int ownerId;
-    @NotNull(groups = {Create.class}, message = "Статус не может быть пустым")
+    private long ownerId;
+    @Column(name = "available", nullable = false)
+    @NotNull(groups = {Create.class}, message = "Статус не может быть null")
     private Boolean available;
-    private ItemRequest request;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
+    private Set<Comment> comments;
 }

@@ -5,13 +5,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
@@ -23,27 +20,27 @@ public class UserController {
     }
 
     @PostMapping
-    public Optional<UserDto> addUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
-        return Optional.ofNullable(userDto).flatMap(dto -> userService.addUser(dto));
+    public UserDto addUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
+        return userService.addUser(userDto).get();
     }
 
     @PatchMapping("/{userId}")
-    public Optional<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable int userId) {
-        return Optional.ofNullable(userDto).flatMap(dto -> userService.updateUser(dto, userId));
+    public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable long userId) {
+        return userService.updateUser(userDto, userId).get();
     }
 
     @GetMapping("/{userId}")
-    public Optional<User> getUserById(@PathVariable int userId) {
-        return userService.getUserById(userId);
+    public UserDto getUserById(@PathVariable long userId) {
+        return userService.getUserById(userId).get();
     }
 
     @GetMapping
-    public Optional<List<User>> getUsers() {
-        return userService.getUsers();
+    public List<User> getUsers() {
+        return userService.getUsers().get();
     }
 
     @DeleteMapping("/{userId}")
-    public Optional<Boolean> deleteUserById(@PathVariable int userId) {
-        return userService.deleteUserById(userId);
+    public void deleteUserById(@PathVariable long userId) {
+        userService.deleteUserById(userId);
     }
 }
