@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.TestHelper;
 import ru.practicum.shareit.booking.dto.BookingInDto;
 import ru.practicum.shareit.booking.dto.BookingOutDto;
+import ru.practicum.shareit.error.ErrorHandler;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,7 @@ class BookingControllerTest {
     void setUp() {
         mvc = MockMvcBuilders
                 .standaloneSetup(bookingController)
+                .setControllerAdvice(ErrorHandler.class)
                 .build();
     }
 
@@ -87,6 +89,17 @@ class BookingControllerTest {
                         .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1));
+    }
+
+    @Test
+    void getBookingsCurrentUser_BookingStateNotExist_ThrowsEnumException() throws Exception {
+        //Действия и проверка
+        mvc.perform(get("/bookings")
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("state", "StateNotExist")
+                        .param("from", "0")
+                        .param("size", "10"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

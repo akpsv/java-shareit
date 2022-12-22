@@ -47,10 +47,37 @@ class ItemRequestRepositoryTest {
         ItemRequest itemRequest2 = TestHelper.createItemRequest(2L, 2L, new HashSet<>());
         ItemRequest save1 = itemRequestRepository.save(itemRequest1);
         ItemRequest save2 = itemRequestRepository.save(itemRequest2);
-       //Действия
+        //Действия
         Optional<List<ItemRequest>> actualItemRequestsExceptRequestor = itemRequestRepository
                 .getItemRequestsCreatedAnotherUsers(1L, entityManager, 0, 10);
 
+        //Проверка
+        assertThat(actualItemRequestsExceptRequestor.get().size(), Matchers.equalTo(1));
+        assertThat(actualItemRequestsExceptRequestor.get().get(0).getRequestor(), Matchers.equalTo(2L));
+    }
+
+    @Test
+    @Transactional
+    void getItemRequestsCreatedAnotherUsers_NumberOfElementsIsNull_ReturnsAllRequestsWithoutPagination() {
+        //Подготовка
+        itemRequestRepository.deleteAll();
+        itemRequestRepository.flush();
+        userRepository.deleteAll();
+        userRepository.flush();
+
+        User user1 = TestHelper.createUser(1L, "user1", "user1@email.ru");
+        User user2 = TestHelper.createUser(2L, "user2", "user2@email.ru");
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        ItemRequest itemRequest1 = TestHelper.createItemRequest(1L, 1L, new HashSet<>());
+        ItemRequest itemRequest2 = TestHelper.createItemRequest(2L, 2L, new HashSet<>());
+        ItemRequest save1 = itemRequestRepository.save(itemRequest1);
+        ItemRequest save2 = itemRequestRepository.save(itemRequest2);
+
+        //Действия
+        Optional<List<ItemRequest>> actualItemRequestsExceptRequestor = itemRequestRepository
+                .getItemRequestsCreatedAnotherUsers(1L, entityManager, 0, null);
         //Проверка
         assertThat(actualItemRequestsExceptRequestor.get().size(), Matchers.equalTo(1));
         assertThat(actualItemRequestsExceptRequestor.get().get(0).getRequestor(), Matchers.equalTo(2L));

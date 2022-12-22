@@ -44,8 +44,11 @@ public class ItemController {
                 .sorted(Comparator.comparing(Item::getId))
                 .collect(Collectors.toList());
 
+//        return itemsOfOwner.stream()
+//                .map(item -> getItemById(item.getId(), userId))
+//                .collect(Collectors.toList());
         return itemsOfOwner.stream()
-                .map(item -> getItemById(item.getId(), userId))
+                .map(item -> itemService.getItemOutDtoById(item.getId(), userId).get())
                 .collect(Collectors.toList());
     }
 

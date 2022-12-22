@@ -73,10 +73,6 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void getItemRequestsCreatedAnotherUsers() {
-    }
-
-    @Test
     void getItemRequest() throws Exception {
         //Подготовка
         long userID = 1L;
@@ -89,5 +85,21 @@ class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.requestor").value(1L));
+    }
+
+    @Test
+    void testGetItemRequestsCreatedAnotherUsers() throws Exception {
+        //Подготовка
+        long userID = 1L;
+        ItemRequestDtoOut itemRequestDtoOut = TestHelper.createItemRequestDtoOut(1L, 1L);
+        Mockito.when(stubItemRequestService.getItemRequestsCreatedAnotherUsers(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(Optional.of(List.of(itemRequestDtoOut)));
+
+        //Действия и проверка
+        mvc.perform(get("/requests/all")
+                        .header("X-Sharer-User-Id", userID)
+                        .param("from", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(1));
     }
 }

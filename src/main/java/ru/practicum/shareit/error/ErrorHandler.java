@@ -5,13 +5,17 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.booking.BookingController;
+import ru.practicum.shareit.item.ItemController;
+import ru.practicum.shareit.request.ItemRequestController;
+import ru.practicum.shareit.user.UserController;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
-@RestControllerAdvice
+@RestControllerAdvice(assignableTypes = {ItemController.class, UserController.class, BookingController.class, ItemRequestController.class})
 public class ErrorHandler {
-    @ExceptionHandler
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse someExceptionHandler(NotFoundException e) {
         return ErrorResponse.builder()
@@ -20,7 +24,7 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse enitityNotFound(EntityNotFoundException e) {
         return ErrorResponse.builder()
@@ -29,7 +33,7 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse validationExceptionHandler(MethodArgumentNotValidException e) {
         return ErrorResponse.builder()
@@ -38,7 +42,7 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ItemNotAvailableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse itemNotAbailableExceptionHandler(ItemNotAvailableException e) {
         return ErrorResponse.builder()
@@ -47,7 +51,7 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse constraintViolationExceptionHandler(ConstraintViolationException e) {
         return ErrorResponse.builder()
@@ -56,7 +60,7 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(EnumException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse enumExceptionHandler(EnumException e) {
         return ErrorResponse.builder()
@@ -65,7 +69,7 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse badRequestExceptionHandler(BadRequestException e) {
         return ErrorResponse.builder()
@@ -74,7 +78,7 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse otherExceptionHandler(Throwable e) {
         return ErrorResponse.builder()

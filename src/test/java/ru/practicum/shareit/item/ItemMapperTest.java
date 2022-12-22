@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingOutDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOutDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequest;
@@ -14,6 +15,7 @@ import ru.practicum.shareit.request.ItemRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
@@ -22,8 +24,20 @@ import static org.mockito.Mockito.isNull;
 
 class ItemMapperTest {
 
+    Item item1;
+    ItemRequest itemRequest1;
+
     @Test
-    void toDto() {
+    void toDto_Item_ReturnsItemDto() {
+        //Подготовка
+        item1 = TestHelper.createItem(1L, "вещь", 1L, true, itemRequest1, new HashSet<>());
+        itemRequest1 = TestHelper.createItemRequest(1L, 1L, Set.of(item1));
+        item1 = item1.toBuilder().itemRequest(itemRequest1).build();
+        ItemDto expectedItemDto = TestHelper.createItemDto(1L, "вещь", "описание", true, 1L);
+        //Действия
+        ItemDto actualItemDto = ItemMapper.toDto(item1).get();
+        //Проверка
+        assertThat(actualItemDto, samePropertyValuesAs(expectedItemDto));
     }
 
     @Test

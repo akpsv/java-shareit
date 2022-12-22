@@ -22,8 +22,7 @@ import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemRequestServiceImplTest {
@@ -96,6 +95,41 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
+    void getItemRequestById_UserIdNotExist_ThrowsNotFoundException() {
+        //Подготовка
+        Mockito.when(stubUserRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+        ItemRequestServiceImpl itemRequestService = new ItemRequestServiceImpl(stubItemRequestRepository,
+                stubUserRepository, entityManager);
+
+        //Действия
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
+                itemRequestService.getItemRequestById(1L, 1L)
+        );
+        //Проверка
+        assertTrue(exception.getMessage().contains("не найден"));
+    }
+
+    @Test
+    void getItemRequestById_RequestIdNotExist_ThrowsNotFoundException() {
+        //Подготовка
+        User user1 = TestHelper.createUser(1L, "user1", "user1@email.ru");
+
+        Mockito.when(stubUserRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user1));
+        Mockito.when(stubItemRequestRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+        ItemRequestServiceImpl itemRequestService = new ItemRequestServiceImpl(stubItemRequestRepository,
+                stubUserRepository, entityManager);
+
+        //Действия
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
+                itemRequestService.getItemRequestById(1L, 1L)
+        );
+        //Проверка
+        assertTrue(exception.getMessage().contains("не найден"));
+    }
+
+    @Test
     void getItemRequestsOfRequestor_ItemRequestorId_ReturnsItemRequests() {
         //Подготовка
         User user1 = TestHelper.createUser(1L, "user1", "user1@email.ru");
@@ -113,6 +147,22 @@ class ItemRequestServiceImplTest {
         int actualQuantityOfItemRequests = itemRequestService.getItemRequestsOfRequestor(1L).get().size();
         //Проверка
         assertThat(actualQuantityOfItemRequests, equalTo(expectedQuanttyOfItemRequests));
+    }
+
+    @Test
+    void getItemRequestsOfRequestor_RequestorIdNotExist_ThrowsNotFoundException() {
+        //Подготовка
+        Mockito.when(stubUserRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+        ItemRequestServiceImpl itemRequestService = new ItemRequestServiceImpl(stubItemRequestRepository,
+                stubUserRepository, entityManager);
+
+        //Действия
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
+                itemRequestService.getItemRequestsOfRequestor(1L)
+        );
+        //Проверка
+        assertTrue(exception.getMessage().contains("не найден"));
     }
 
     @Test

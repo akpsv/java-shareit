@@ -9,6 +9,7 @@ import ru.practicum.shareit.TestHelper;
 import ru.practicum.shareit.booking.*;
 import ru.practicum.shareit.booking.dto.BookingOutDto;
 import ru.practicum.shareit.error.BadRequestException;
+import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentOutDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOutDto;
@@ -81,6 +82,25 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void add_UserIdIsNotExist_ThrowsNotFoundException() {
+        //Подготовка
+        User user1 = TestHelper.createUser(1L, "user1", "user1@email.ru");
+        when(stubUserRepository.findById(anyLong())).thenThrow(new NotFoundException("Ид пользователя не найдено"));
+
+        ItemService itemService = ItemServiceImpl.builder()
+                .userRepository(stubUserRepository)
+                .build();
+        //Действия
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
+                itemService.add(ItemDto.builder().build(), 1L)
+        );
+
+        //Проверка
+        assertTrue(exception.getMessage().contains("Ид"));
+    }
+
+
+    @Test
     void update_ItemDto_ReturnsItemDtoWithNewData() {
         //Подготовка
         Item item1 = TestHelper.createItem(1L, "вещь", 1L, true, null, new HashSet<>());
@@ -108,7 +128,7 @@ class ItemServiceImplTest {
         Item item1 = TestHelper.createItem(1L, "вещь", 1L, true, null, new HashSet<>());
         when(stubItemRepository.save(Mockito.any(Item.class))).thenReturn(item1);
 
-        Booking booking1 = TestHelper.createBooking(1L, LocalDateTime.now().minusDays(1),BookingStatus.APPROVED, 1L, item1);
+        Booking booking1 = TestHelper.createBooking(1L, LocalDateTime.now().minusDays(1), null, BookingStatus.APPROVED, 1L, item1);
         when(stubBookingRepository.findByBookerIdEquals(anyLong())).thenReturn(Optional.of(List.of(booking1)));
 
         User user1 = TestHelper.createUser(1L, "user1", "user1@email.ru");

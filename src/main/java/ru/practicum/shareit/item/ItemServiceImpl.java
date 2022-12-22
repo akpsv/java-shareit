@@ -142,10 +142,10 @@ public class ItemServiceImpl implements ItemService {
         }
         Item item = bookingsByBookerId.get().stream()
                 .filter(booking ->
-                        booking.getItem().getId() == itemId &&
-                                booking.getStatus().equals(BookingStatus.APPROVED) &&
+                                booking.getItem().getId() == itemId &&
+                                        booking.getStatus().equals(BookingStatus.APPROVED) &&
 //                                booking.getStart().isBefore(LocalDateTime.now())
-                                booking.getStart(). isBefore(LocalDateTime.now())
+                                        booking.getStart().isBefore(LocalDateTime.now())
                 )
                 .map(booking -> booking.getItem())
                 .findFirst()

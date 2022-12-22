@@ -4,6 +4,8 @@ import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingInDto;
 import ru.practicum.shareit.booking.dto.BookingOutDto;
+import ru.practicum.shareit.item.dto.CommentInDto;
+import ru.practicum.shareit.item.dto.CommentOutDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOutDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -22,12 +24,13 @@ import java.util.Set;
 
 public class TestHelper {
 
-    public static Booking createBooking(long bookingId, LocalDateTime startDateTime, BookingStatus status, long bookerId, Item item) {
+    public static Booking createBooking(long bookingId, LocalDateTime startDateTime, LocalDateTime endDateTime, BookingStatus status, long bookerId, Item item) {
+        endDateTime = endDateTime != null ? endDateTime : LocalDateTime.of(2023, 02, 10, 12, 00);
         return Booking.builder()
                 .id(bookingId)
-//                .start(LocalDateTime.of(2022, 01, 10, 12, 00))
                 .start(startDateTime)
-                .end(LocalDateTime.of(2023, 02, 10, 12, 00))
+//                .end(LocalDateTime.of(2023, 02, 10, 12, 00))
+                .end(endDateTime)
                 .status(status)
                 .bookerId(bookerId)
                 .item(item)
@@ -148,6 +151,21 @@ public class TestHelper {
                 .id(itemRequestId)
                 .description("описание")
                 .requestor(requestorId)
+                .build();
+    }
+
+    public static CommentInDto createCommentInDto(long commentId) {
+        return CommentInDto.builder()
+                .id(commentId)
+                .text("text")
+                .build();
+    }
+
+    public static CommentOutDto createCommentOutDto(long commentId) {
+        return CommentOutDto.builder()
+                .id(commentId)
+                .authorName("AuthorName")
+                .text("text")
                 .build();
     }
 }
