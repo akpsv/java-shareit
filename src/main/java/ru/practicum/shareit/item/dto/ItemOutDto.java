@@ -37,5 +37,4 @@ public class ItemOutDto {
             this.status = status;
         }
     }
-
 }

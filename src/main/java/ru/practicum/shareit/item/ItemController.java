@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOutDto;
 import ru.practicum.shareit.item.model.Item;
 
+import javax.validation.constraints.Min;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,8 +37,10 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemOutDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") final int userId) {
-        List<Item> itemsOfOwner = itemService.getOwnerItems(userId).get().stream()
+    public List<ItemOutDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") final int userId,
+                                          @RequestParam(required = false) @Min(0) Integer from,
+                                          @RequestParam(required = false) @Min(1) Integer size) {
+        List<Item> itemsOfOwner = itemService.getOwnerItems(userId, from, size).get().stream()
                 .sorted(Comparator.comparing(Item::getId))
                 .collect(Collectors.toList());
 
@@ -47,8 +50,9 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<Item> search(@RequestParam String text) {
-        return itemService.searchItems(text).get();
+    public List<Item> search(@RequestParam String text, @RequestParam(required = false) @Min(0) Integer from,
+                             @RequestParam(required = false) @Min(1) Integer size) {
+        return itemService.searchItems(text, from, size).get();
     }
 
     @PostMapping("/{itemId}/comment")

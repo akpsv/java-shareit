@@ -16,7 +16,7 @@ public class BookingMapping {
     private final ItemRepository itemRepository;
     private final UserService userService;
 
-    public BookingOutDto toDto(Booking booking) {
+    public BookingOutDto toBookingOutDto(Booking booking) {
         UserDto userDto = userService.getUserById(booking.getBookerId()).get();
         return BookingOutDto.builder()
                 .booker(new BookingOutDto.BookerDto(
@@ -38,7 +38,7 @@ public class BookingMapping {
                 .build();
     }
 
-    public Booking fromInDto(BookingInDto bookingInDto) {
+    public Booking toBooking(BookingInDto bookingInDto) {
         Item item = itemRepository.findById(bookingInDto.getItemId())
                 .orElseThrow(() -> new NotFoundException("Вещь с таким ИД отсутствует"));
         return Booking.builder()

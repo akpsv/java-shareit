@@ -17,9 +17,9 @@ public interface ItemService {
 
     Optional<ItemOutDto> getItemOutDtoById(long itemId, long userId);
 
-    Optional<List<Item>> getOwnerItems(long userId);
+    Optional<List<Item>> getOwnerItems(long userId, Integer from, Integer size);
 
-    Optional<List<Item>> searchItems(String searchingText);
+    Optional<List<Item>> searchItems(String searchingText, Integer from, Integer size);
 
     Optional<CommentOutDto> addComment(long userId, long itemId, String comment);
 }

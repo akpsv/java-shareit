@@ -13,7 +13,7 @@ public interface BookingService {
 
     Optional<BookingOutDto> getBookingById(long userId, long bookingId);
 
-    Optional<List<BookingOutDto>> getBookingsCurrentUser(long userId, BookingState bookingState);
+    Optional<List<BookingOutDto>> getBookingsCurrentUser(long userId, BookingState bookingState, Integer from, Integer size);
 
-    Optional<List<BookingOutDto>> getBookingsCurrentOwner(long userId, BookingState bookingState);
+    Optional<List<BookingOutDto>> getBookingsCurrentOwner(long userId, BookingState bookingState, Integer from, Integer size);
 }

@@ -2,10 +2,12 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import ru.practicum.shareit.Create;
+import ru.practicum.shareit.request.ItemRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -35,5 +37,10 @@ public class Item {
     private Boolean available;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_request_id")
+//    @Column(name = "request_id")
+    private ItemRequest itemRequest;
 }
