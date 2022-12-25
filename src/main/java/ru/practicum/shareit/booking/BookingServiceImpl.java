@@ -1,9 +1,9 @@
 package ru.practicum.shareit.booking;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingInDto;
@@ -16,7 +16,6 @@ import ru.practicum.shareit.user.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
@@ -26,15 +25,22 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
     private BookingRepository bookingRepository;
     private ItemRepository itemRepository;
     private UserRepository userRepository;
     private BookingMapping bookingMapping;
-    @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    public BookingServiceImpl(BookingRepository bookingRepository, ItemRepository itemRepository, UserRepository userRepository, BookingMapping bookingMapping, EntityManager entityManager) {
+        this.bookingRepository = bookingRepository;
+        this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
+        this.bookingMapping = bookingMapping;
+        this.entityManager = entityManager;
+    }
 
     @Transactional
     @Override

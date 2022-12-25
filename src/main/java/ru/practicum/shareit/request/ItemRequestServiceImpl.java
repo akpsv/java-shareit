@@ -1,9 +1,9 @@
 package ru.practicum.shareit.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.request.dto.ItemRequestDtoIn;
@@ -11,7 +11,6 @@ import ru.practicum.shareit.request.dto.ItemRequestDtoOut;
 import ru.practicum.shareit.user.UserRepository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -20,19 +19,18 @@ import java.util.stream.Collectors;
 @Service
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
     private ItemRequestRepository itemRequestRepository;
     private UserRepository userRepository;
-    /**
-     * @param requestorId
-     * @param indexOfFirstElement
-     * @param numberOfElemenets
-     * @return
-     */
-    @PersistenceContext
     EntityManager entityManager;
+
+    @Autowired
+    public ItemRequestServiceImpl(ItemRequestRepository itemRequestRepository, UserRepository userRepository, EntityManager entityManager) {
+        this.itemRequestRepository = itemRequestRepository;
+        this.userRepository = userRepository;
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Optional<ItemRequestDtoOut> addItemRequest(long requestorId, ItemRequestDtoIn itemRequestDtoIn) {

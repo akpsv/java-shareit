@@ -1,6 +1,10 @@
 package ru.practicum.shareit.item;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
@@ -19,7 +23,6 @@ import ru.practicum.shareit.user.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +33,6 @@ import java.util.Optional;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private ItemRepository itemRepository;
     private CommentRepository commentRepository;
@@ -38,9 +40,18 @@ public class ItemServiceImpl implements ItemService {
     private UserRepository userRepository;
     private BookingService bookingService;
     private ItemRequestRepository itemRequestRepository;
-
-    @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    public ItemServiceImpl(ItemRepository itemRepository, CommentRepository commentRepository, BookingRepository bookingRepository, UserRepository userRepository, BookingService bookingService, ItemRequestRepository itemRequestRepository, EntityManager entityManager) {
+        this.itemRepository = itemRepository;
+        this.commentRepository = commentRepository;
+        this.bookingRepository = bookingRepository;
+        this.userRepository = userRepository;
+        this.bookingService = bookingService;
+        this.itemRequestRepository = itemRequestRepository;
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Optional<ItemDto> add(ItemDto itemDto, long ownerId) {
