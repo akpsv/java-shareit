@@ -1,9 +1,9 @@
 package ru.practicum.shareit.booking;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingInDto;
@@ -23,18 +23,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
-    @Autowired
     private BookingRepository bookingRepository;
-    @Autowired
     private ItemRepository itemRepository;
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private BookingMapping bookingMapping;
     @PersistenceContext
     private EntityManager entityManager;
@@ -133,3 +130,4 @@ public class BookingServiceImpl implements BookingService {
         return booking;
     }
 }
+

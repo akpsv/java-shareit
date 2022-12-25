@@ -22,7 +22,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
         Root<Booking> fromBookings = criteriaQuery.from(Booking.class);
-        //TODO: Заменить строковые обозначения имён свойст на использование статической метамодели
+
         Predicate predicate = null;
         switch (state.name()) {
             case "ALL":

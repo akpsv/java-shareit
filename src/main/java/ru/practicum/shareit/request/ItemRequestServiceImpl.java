@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.request.dto.ItemRequestDtoIn;
@@ -24,9 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
-    @Autowired
     private ItemRequestRepository itemRequestRepository;
-    @Autowired
     private UserRepository userRepository;
     /**
      * @param requestorId
@@ -49,12 +46,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         userRepository.findById(requestorId).orElseThrow(() -> new NotFoundException("Запрашивающий пользователь не найден"));
     }
 
-//    private void checkItemRequestDtoIn(ItemRequestDtoIn itemRequestDtoIn) {
-//        if (itemRequestDtoIn.getDescription() == null || itemRequestDtoIn.getDescription().isBlank()) {
-//            throw new BadRequestException("Поле с описанием пустое.");
-//        }
-//    }
-
     private Optional<ItemRequestDtoOut> getItemRequestDtoOut(ItemRequestDtoIn itemRequestDtoIn) {
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDtoIn);
         ItemRequest savedItemRequest = itemRequestRepository.save(itemRequest);
@@ -63,11 +54,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     /**
-     * TODO:
-     *  Получить все запросы пользователя
-     *  Преобразовать из запроса в соответствующие дто
-     *  Вернуть список дто
-     *
      * @param requestorId
      * @return
      */

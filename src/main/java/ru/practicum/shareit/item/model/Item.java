@@ -41,6 +41,5 @@ public class Item {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_request_id")
-//    @Column(name = "request_id")
     private ItemRequest itemRequest;
 }

@@ -22,7 +22,6 @@ class UserRepositoryTest {
         User actualUser = userRepository.save(user1);
         User userById = userRepository.findById(actualUser.getId()).get();
         //Проверка
-
         assertThat(userById.getId(), Matchers.not(0L));
     }
 

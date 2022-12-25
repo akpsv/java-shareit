@@ -36,7 +36,6 @@ public class ItemRequest {
     @CreationTimestamp
     @Column(name = "created", updatable = false)
     private Date created;
-    //TODO: как сделать чтобы никогда не было null
     @OneToMany(mappedBy = "itemRequest", cascade = CascadeType.PERSIST)
     private Set<Item> items = new HashSet<>(); //Список ответов на запрос в виде созданных вещей
 }

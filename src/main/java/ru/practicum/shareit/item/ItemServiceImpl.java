@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
@@ -33,17 +32,11 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    @Autowired
     private ItemRepository itemRepository;
-    @Autowired
     private CommentRepository commentRepository;
-    @Autowired
     private BookingRepository bookingRepository;
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private BookingService bookingService;
-    @Autowired
     private ItemRequestRepository itemRequestRepository;
 
     @PersistenceContext
