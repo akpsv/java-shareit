@@ -1,5 +1,8 @@
 package ru.practicum.shareit.booking;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,35 +16,41 @@ import ru.practicum.shareit.user.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Getter
+@Setter
+@NoArgsConstructor
 @Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
-    @Autowired
     private BookingRepository bookingRepository;
-    @Autowired
     private ItemRepository itemRepository;
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private BookingMapping bookingMapping;
-    @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    public BookingServiceImpl(BookingRepository bookingRepository, ItemRepository itemRepository, UserRepository userRepository, BookingMapping bookingMapping, EntityManager entityManager) {
+        this.bookingRepository = bookingRepository;
+        this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
+        this.bookingMapping = bookingMapping;
+        this.entityManager = entityManager;
+    }
 
     @Transactional
     @Override
     public Optional<BookingOutDto> add(long bookerId, BookingInDto bookingInDto) {
-        Booking booking = bookingMapping.fromInDto(bookingInDto);
+        Booking booking = bookingMapping.toBooking(bookingInDto);
         checkBooking(bookerId, booking);
 
         booking = booking.toBuilder().status(BookingStatus.WAITING).bookerId(bookerId).build();
         Optional<Booking> addedBooking = Optional.of(bookingRepository.save(booking));
-        return Optional.ofNullable(bookingMapping.toDto(addedBooking.get()));
+        return Optional.ofNullable(bookingMapping.toBookingOutDto(addedBooking.get()));
     }
 
     /**
@@ -55,20 +64,24 @@ public class BookingServiceImpl implements BookingService {
         Booking resultBooking = bookingRepository.findById(bookingId)   //Получение бронирования по идентификатору
                 .filter(booking -> booking.getItem().getOwnerId() == userId) //является ли запрашивающий пользователь владельцем?
                 .flatMap(booking -> {
-                    if (approved) {
-                        if (booking.getStatus().equals(BookingStatus.APPROVED)) {
-                            throw new BadRequestException("Статус бронирования уже установлен в одобрено.");
-                        }
-                        booking = booking.toBuilder().status(BookingStatus.APPROVED).build();
-                    } else {
-                        booking = booking.toBuilder().status(BookingStatus.REJECTED).build();
-                    }
-                    Booking savedBooking = bookingRepository.save(booking);
-                    return Optional.of(savedBooking);
+                    booking = checkAndSetBookingStatus(approved, booking);
+                    return Optional.of(bookingRepository.save(booking));
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Элемент не найден."));
-        BookingOutDto bookingOutDto = bookingMapping.toDto(resultBooking);
-        return Optional.ofNullable(bookingOutDto);
+
+        return Optional.ofNullable(bookingMapping.toBookingOutDto(resultBooking));
+    }
+
+    protected Booking checkAndSetBookingStatus(boolean approved, Booking booking) {
+        if (approved) {
+            if (booking.getStatus().equals(BookingStatus.APPROVED)) {
+                throw new BadRequestException("Статус бронирования уже установлен в одобрено.");
+            }
+            booking = booking.toBuilder().status(BookingStatus.APPROVED).build();
+        } else {
+            booking = booking.toBuilder().status(BookingStatus.REJECTED).build();
+        }
+        return booking;
     }
 
     @Override
@@ -77,17 +90,18 @@ public class BookingServiceImpl implements BookingService {
                 .filter(booking -> booking.getBookerId() == userId ||
                         itemRepository.findById(booking.getItem().getId()).get().getOwnerId() == userId)
                 .orElseThrow(() -> new EntityNotFoundException("Такое бронирование не найдено."));
-        BookingOutDto bookingOutDto = bookingMapping.toDto(resultBooking);
-        return Optional.ofNullable(bookingOutDto);
+
+        return Optional.ofNullable(bookingMapping.toBookingOutDto(resultBooking));
     }
 
     @Override
-    public Optional<List<BookingOutDto>> getBookingsCurrentUser(long userId, BookingState bookingState) {
+    public Optional<List<BookingOutDto>> getBookingsCurrentUser(long userId, BookingState bookingState, Integer from, Integer size) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("ИД пользователя не правильный"));
 
-        List<BookingOutDto> bookingOutDtos = bookingRepository.getBookingCurrentUser(entityManager, userId, bookingState)
+        List<BookingOutDto> bookingOutDtos = bookingRepository
+                .getBookingCurrentUser(entityManager, userId, bookingState, from, size)
                 .get().stream()
-                .map(booking -> bookingMapping.toDto(booking))
+                .map(booking -> bookingMapping.toBookingOutDto(booking))
                 .collect(Collectors.toList());
 
         return Optional.of(bookingOutDtos);
@@ -95,10 +109,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public Optional<List<BookingOutDto>> getBookingsCurrentOwner(long userId, BookingState bookingState) {
-        List<BookingOutDto> bookingOutDtos = bookingRepository.getBookingCurrentOwner(entityManager, userId, bookingState)
+    public Optional<List<BookingOutDto>> getBookingsCurrentOwner(long userId, BookingState bookingState, Integer from, Integer size) {
+        List<BookingOutDto> bookingOutDtos = bookingRepository
+                .getBookingCurrentOwner(entityManager, userId, bookingState, from, size)
                 .get().stream()
-                .map(booking -> bookingMapping.toDto(booking))
+                .map(booking -> bookingMapping.toBookingOutDto(booking))
                 .collect(Collectors.toList());
 
         return Optional.ofNullable(bookingOutDtos);
@@ -121,3 +136,4 @@ public class BookingServiceImpl implements BookingService {
         return booking;
     }
 }
+
