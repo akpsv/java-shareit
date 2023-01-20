@@ -10,8 +10,10 @@ import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
 @Controller
 @RequestMapping(path = "/bookings")
@@ -44,5 +46,22 @@ public class BookingController {
                                              @PathVariable Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
+    }
+
+    @GetMapping("/owner")
+    public ResponseEntity<Object> getBookingsCurrentOwner(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                                                       @RequestParam(defaultValue = "ALL") String state,
+                                                       @Validated @RequestParam(required = false) @Min(0) Integer from,
+                                                       @Validated @RequestParam(required = false) @Min(1) Integer size) {
+
+        log.info("Get booking with state {}, userId={}, from={}, size={}", state, ownerId, from, size);
+        return bookingClient.getBookings(ownerId, BookingState.valueOf(state), from, size);
+    }
+
+    @PatchMapping("/{bookingId}")
+    public ResponseEntity<Object> approveBooking(@RequestHeader("X-Sharer-User-Id") long userId,
+                                        @PathVariable long bookingId, @RequestParam boolean approved) {
+        log.info("Approve booking with userId={}, bookingId={}, approved={}", userId,bookingId, approved);
+        return bookingClient.approveBooking(userId, bookingId, approved);
     }
 }
