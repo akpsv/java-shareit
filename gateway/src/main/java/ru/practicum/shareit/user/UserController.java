@@ -21,6 +21,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Object> getUsers() {
+        log.info("Get users");
         return userClient.getUsers();
     }
 
