@@ -6,7 +6,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDtoIn;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Validated
 @RestController
@@ -24,7 +27,7 @@ public class ItemRequestController {
      */
     @PostMapping
     public ResponseEntity<Object> addItemRequest(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                 @RequestBody ItemRequestDtoIn itemRequestDtoIn) {
+                                                 @Valid @RequestBody ItemRequestDtoIn itemRequestDtoIn) {
         return itemRequestClient.addItemRequest(userId, itemRequestDtoIn);
     }
 
@@ -64,9 +67,8 @@ public class ItemRequestController {
      */
     @GetMapping("/all")
     public ResponseEntity<Object> getItemRequestsCreatedAnotherUsers(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                                     @RequestParam(required = false) @Min(0) Integer from,
-                                                                     @RequestParam(required = false) @Min(1) Integer size) {
+                                                                     @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                                     @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return itemRequestClient.getItemRequestsCreatedAnotherUsers(userId, from, size);
     }
-
 }

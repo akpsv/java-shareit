@@ -6,13 +6,14 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.item.dto.CommentDtoIn;
 import ru.practicum.shareit.item.dto.ItemDtoIn;
 
-import javax.validation.constraints.Min;
 import java.util.Map;
 
 @Service
@@ -50,17 +51,15 @@ public class ItemClient extends BaseClient {
         return patch("/" + itemId, userId, itemDtoIn);
     }
 
-    public ResponseEntity<Object> search(@RequestParam String text, @RequestParam(required = false) @Min(0) Integer from,
-                                         @RequestParam(required = false) @Min(1) Integer size) {
+    public ResponseEntity<Object> search(String text, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "text", text,
                 "from", from,
                 "size", size);
-        return get("/search", null, parameters);
+        return get("/search?text={text}&from={from}&size={size}", null, parameters);
     }
 
     public ResponseEntity<Object> addComment(@RequestHeader("X-Sharer-User-Id") final int userId, @PathVariable long itemId, @RequestBody CommentDtoIn comment) {
         return post("/" + itemId + "/comment", userId, comment);
-//        return itemService.addComment(userId, itemId, comment.getText()).get();
     }
 }

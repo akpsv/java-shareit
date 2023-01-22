@@ -2,6 +2,9 @@ package ru.practicum.shareit.user.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,9 +13,8 @@ import lombok.*;
 @Builder(toBuilder = true)
 public class UserDtoIn {
     private long id;
-    //    @NotBlank(groups = {Create.class}, message = "Имя не может быть null")
-    private String name;
-    //    @NotBlank(groups = {Create.class}, message = "Email не может быть null")
-//    @Email(groups = {Create.class}, message = "В поле email должен быть адрес электронной почты")
+    @NotBlank(message = "Email не может быть null")
+    @Email(message = "В поле email должен быть адрес электронной почты")
     private String email;
+    private String name;
 }

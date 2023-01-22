@@ -3,22 +3,26 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDtoIn;
 import ru.practicum.shareit.item.dto.ItemDtoIn;
 
-import javax.validation.constraints.Min;
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class ItemController {
 
     private final ItemClient itemClient;
 
     @PostMapping
-    public ResponseEntity<Object> add(@RequestHeader("X-Sharer-User-Id") final int userId, @RequestBody final ItemDtoIn itemDtoIn) {
+    public ResponseEntity<Object> add(@RequestHeader("X-Sharer-User-Id") final int userId, @Valid @RequestBody final ItemDtoIn itemDtoIn) {
         log.info("Creating item {} for userId={}", itemDtoIn, userId);
         return itemClient.addItem(userId, itemDtoIn);
     }
@@ -31,8 +35,8 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<Object> getOwnerItems(@RequestHeader("X-Sharer-User-Id") final int userId,
-                                                @RequestParam(required = false) @Min(0) Integer from,
-                                                @RequestParam(required = false) @Min(1) Integer size) {
+                                                @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Get items with userId={}, from={}, size={}", userId, from, size);
         return itemClient.getItems(userId, from, size);
     }
@@ -43,8 +47,9 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> search(@RequestParam String text, @RequestParam(required = false) @Min(0) Integer from,
-                                         @RequestParam(required = false) @Min(1) Integer size) {
+    public ResponseEntity<Object> search(@RequestParam String text,
+                                         @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                         @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Search text {} ", text);
         return itemClient.search(text, from, size);
     }

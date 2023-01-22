@@ -50,5 +50,4 @@ public class ItemRequestClient extends BaseClient {
         );
         return get("/all", userId, parameters);
     }
-
 }
