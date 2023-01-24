@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto addUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
+    public UserDto addUser(@RequestBody UserDto userDto) {
         return userService.addUser(userDto).get();
     }
 

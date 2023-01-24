@@ -1,12 +1,9 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import ru.practicum.shareit.Create;
 import ru.practicum.shareit.request.ItemRequest;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,16 +21,12 @@ public class Item {
     @Column(name = "item_id")
     private long id;
     @Column(name = "name", nullable = false)
-    @NotBlank(groups = {Create.class}, message = "Имя не может быть пустым")
     private String name;
     @Column(name = "description", nullable = false)
-    @NotBlank(groups = {Create.class}, message = "Описание не может быть пустым")
     private String description;
     @Column(name = "owner_id", nullable = false)
-    @NotBlank(groups = {Create.class}, message = "Идентификатор владельца не может быть пустым")
     private long ownerId;
     @Column(name = "available", nullable = false)
-    @NotNull(groups = {Create.class}, message = "Статус не может быть null")
     private Boolean available;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)

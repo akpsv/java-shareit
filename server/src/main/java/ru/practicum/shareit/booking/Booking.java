@@ -4,7 +4,6 @@ import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;
-import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
 /**
@@ -27,10 +26,8 @@ public class Booking {
     @Column(name = "booking_id")
     private long id;
     @Column(name = "start_date")
-    @FutureOrPresent
     private LocalDateTime start;
     @Column(name = "end_date")
-    @FutureOrPresent
     private LocalDateTime end;
     @Column(name = "booker_id")
     private long bookerId; //Ид пользователя, который осуществляет бронирование

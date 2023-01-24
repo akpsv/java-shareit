@@ -3,11 +3,9 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.Create;
 import ru.practicum.shareit.request.dto.ItemRequestDtoIn;
 import ru.practicum.shareit.request.dto.ItemRequestDtoOut;
 
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Validated
@@ -26,7 +24,7 @@ public class ItemRequestController {
      */
     @PostMapping
     public ItemRequestDtoOut addItemRequest(@RequestHeader("X-Sharer-User-Id") long userId,
-                                            @Validated({Create.class}) @RequestBody ItemRequestDtoIn itemRequestDtoIn) {
+                                            @RequestBody ItemRequestDtoIn itemRequestDtoIn) {
         return itemRequestService.addItemRequest(userId, itemRequestDtoIn).get();
     }
 
@@ -61,13 +59,13 @@ public class ItemRequestController {
      */
     @GetMapping("/all")
     public List<ItemRequestDtoOut> getItemRequestsCreatedAnotherUsers(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                                      @Validated({Create.class}) @RequestParam(required = false) @Min(0) Integer from,
-                                                                      @Validated({Create.class}) @RequestParam(required = false) @Min(1) Integer size) {
+                                                                      @RequestParam(required = false) Integer from,
+                                                                      @RequestParam(required = false) Integer size) {
         return itemRequestService.getItemRequestsCreatedAnotherUsers(userId, from, size).get();
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDtoOut getItemRequest(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable @Min(1) long requestId) {
+    public ItemRequestDtoOut getItemRequest(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long requestId) {
         return itemRequestService.getItemRequestById(userId, requestId).get();
     }
 

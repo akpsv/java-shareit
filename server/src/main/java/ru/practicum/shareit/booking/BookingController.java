@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingInDto;
 import ru.practicum.shareit.booking.dto.BookingOutDto;
 
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Validated
@@ -29,8 +28,8 @@ public class BookingController {
     @GetMapping
     public List<BookingOutDto> getBookingsCurrentUser(@RequestHeader("X-Sharer-User-Id") long userId,
                                                       @RequestParam(defaultValue = "ALL") String state,
-                                                      @Validated @RequestParam(required = false) @Min(0) Integer from,
-                                                      @Validated @RequestParam(required = false) @Min(1) Integer size) {
+                                                      @RequestParam(required = false) Integer from,
+                                                      @RequestParam(required = false) Integer size) {
 
         return bookingService.getBookingsCurrentUser(userId, BookingState.from(state), from, size).get();
     }
@@ -38,8 +37,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingOutDto> getBookingsCurrentOwner(@RequestHeader("X-Sharer-User-Id") long ownerId,
                                                        @RequestParam(defaultValue = "ALL") String state,
-                                                       @Validated @RequestParam(required = false) @Min(0) Integer from,
-                                                       @Validated @RequestParam(required = false) @Min(1) Integer size) {
+                                                       @RequestParam(required = false) Integer from,
+                                                       @RequestParam(required = false) Integer size) {
 
         return bookingService.getBookingsCurrentOwner(ownerId, BookingState.from(state), from, size).get();
     }
